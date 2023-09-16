@@ -19,11 +19,12 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <div className="">
-        <ul className=" p-1 flex text-xl font-medium text-black">
-          <li className="mr-4">Home</li>
-          <li className="mr-4">About</li>
-          <li className="mr-4">5435 Online</li>
+      <div className="mt-4">
+        <ul className="flex text-xl font-medium text-black">
+          <li className="mr-4 hover:text-blue-500">Home</li>
+          <li className="mr-4 hover:text-blue-500">About</li>
+          <li className="mr-4 hover:text-blue-500">Let's Talk</li>
+          <li className="mr-4 text-green-500">5435 Online</li>
         </ul>
       </div>
     </div>
