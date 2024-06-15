@@ -1,28 +1,32 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const initialState = {
     username: "",
     gender: "",
-  }
+  };
   const [formData, setFormData] = useState(initialState);
 
-  const handleInput = (e)=>{
-    const {name , value} = e.target;
+  const handleInput = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]:value,
-    })
-  }
+      [name]: value,
+    });
+  };
 
-  const onSubmit = (e)=>{
+  const onSubmit = (e) => {
     e.preventDefault();
-    console.log("name: ", formData.username)
-    console.log("gender: ", formData.gender)
+    console.log("name: ", formData.username);
+    console.log("gender: ", formData.gender);
 
     // Empty input field:
-    setFormData(initialState)
-  }
+    setFormData(initialState);
+    navigate("/chat", { state: formData });
+  };
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -43,7 +47,7 @@ const Login = () => {
         <div className="bg-white w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Signin with your name
+              Start chat with stranger!
             </h1>
             <form className="space-y-4 md:space-y-6" action="#">
               <div>
@@ -85,7 +89,7 @@ const Login = () => {
                 onClick={onSubmit}
                 className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
-                Sign in
+                Start Chat
               </button>
             </form>
           </div>

@@ -1,6 +1,17 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { SocketContext } from "./SocketContext";
 
 const Navbar = () => {
+  const [users, setUsers] = useState(0);
+  const socket = useContext(SocketContext);
+
+  // Handle Total Active User:
+  useEffect(() => {
+    socket.on("active-user", (data) => {
+      setUsers(data.activeUser);
+    });
+  }, [users]);
+
   return (
     <div className="p-2 flex bg-violet-100 max-w-xxl shadow-lg">
       <div className="flex-grow">
@@ -15,7 +26,9 @@ const Navbar = () => {
             />
           </div>
           <div className="p-6">
-            <h3 className="text-xl font-medium text-black">ConnectWithStranger</h3>
+            <h3 className="text-xl font-medium text-black">
+              Connect With Stranger
+            </h3>
           </div>
         </div>
       </div>
@@ -24,7 +37,7 @@ const Navbar = () => {
           <li className="mr-4 hover:text-blue-500">Home</li>
           <li className="mr-4 hover:text-blue-500">About</li>
           <li className="mr-4 hover:text-blue-500">Let's Talk</li>
-          <li className="mr-4 text-green-500">5435 Online</li>
+          <li className="mr-4 text-green-500">{users} Online</li>
         </ul>
       </div>
     </div>
