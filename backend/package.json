@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "nodemon src/index.js",
+    "coLogin": "aws codeartifact login --tool npm --repository eslint --domain acpl --domain-owner 244075126032 --region ap-south-1"
   },
   "author": "",
   "license": "ISC",

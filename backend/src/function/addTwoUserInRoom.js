@@ -24,13 +24,21 @@ const addTwoUserInRoom = async (userId, io) => {
     }
 
     // Add to Active rooms:
+    const singleRomm = {};
+    singleRomm[roomId] = { user1: user1, user2: user2 };
+
     TOTAL_ACTIVE_ROOMS[roomId] = { user1: user1, user2: user2 };
     DISCONNECT_USER_INFO[user1] = roomId;
     DISCONNECT_USER_INFO[user2] = roomId;
 
+    // Put into chat room:
+    //console.log("Aticve user-> ", singleRomm);
+    // io.sockets.sockets.join(roomId);
+
     // To get socket info using room id:
     // const room = io.sockets.adapter.rooms.get(roomId);
     // console.log({ room });
+    return singleRomm;
   } catch (error) {
     console.log(error);
     return {
