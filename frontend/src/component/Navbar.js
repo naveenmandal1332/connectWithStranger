@@ -10,10 +10,14 @@ const Navbar = () => {
     socket.on("active-user", (data) => {
       setUsers(data.activeUser);
     });
+
+    socket.on("info", (data) => {
+      setUsers(data.activeUser);
+    });
   }, [users]);
 
   return (
-    <div className="p-2 flex bg-violet-100 max-w-xxl shadow-lg">
+    <div className="p-0 flex bg-violet-100 max-w-xxl shadow-lg">
       <div className="flex-grow">
         <div className="flex space-x-2">
           <div>

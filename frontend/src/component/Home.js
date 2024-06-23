@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "./Navbar";
 import Login from "./Login";
+import Popup from "./Popup";
 
 const Home = () => {
   // socket.on("connection", (socket) => {
@@ -15,6 +16,7 @@ const Home = () => {
       {/* login form */}
       <Login />
       {/* home page body */}
+
       {/* footer */}
     </div>
   );

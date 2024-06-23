@@ -3,7 +3,7 @@ import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import dotenv from "dotenv";
-import socketInstance from "./function/socketInstace.js";
+// import socketInstance from "./function/socketInstace.js";
 import { v4 as uuidv4 } from "uuid";
 dotenv.config();
 
@@ -40,30 +40,70 @@ io.on("connection", (socket) => {
   io.emit("active-user", { activeUser: totalActiveUser.size });
 
   // Assign the user to a room
-  if (waitingUsers.length > 0) {
-    const partner = waitingUsers.pop();
-    const roomId = uuidv4();
+  console.info({ waitingUsers });
 
-    rooms[roomId] = [partner, socket];
-    socket.roomId = roomId;
-    partner.roomId = roomId;
+  // Create Rooms!:
+  socket.on("start-chat", () => {
+    if (socket.roomId) {
+      console.info(`User ${socket.id} is already in room ${socket.roomId}`);
 
-    partner.join(roomId);
-    socket.join(roomId);
+      // Send Message to Re-load user:
+      socket.emit("info", {
+        message: "You are already connected to a room",
+        textField: true,
+        activeUser: totalActiveUser.size,
+        roomId: socket.roomId,
+      });
+      return;
+    }
 
-    io.to(roomId).emit("info", {
-      message: "You are now connected to a room",
-      roomId,
-    });
-    console.info("Active Room", Object.keys(rooms).length);
-    console.info("Rooms: ", rooms);
-  } else {
-    waitingUsers.push(socket);
-    console.info("Not Match: ", { users: waitingUsers.length });
-    socket.emit("info", {
-      message: "Waiting for a partner...",
-    });
-  }
+    // Check For If Already in Waiting list:
+    if (waitingUsers.includes(socket)) {
+      console.info(`User ${socket.id} is already waiting for a partner`);
+      socket.emit("info", {
+        message: "Waiting for a partner...",
+        activeUser: totalActiveUser.size,
+        textField: false,
+      });
+      return;
+    }
+
+    if (waitingUsers.length > 0) {
+      // Remove the First User From Waiting-List:
+      const partner = waitingUsers.shift();
+
+      // Generate Random roomId:
+      const roomId = uuidv4();
+
+      const partnerId = partner.id;
+      const socketId = socket.id;
+      console.info({ newUserSocketId, partnerId, socketId });
+
+      rooms[roomId] = [partner, socket];
+      socket.roomId = roomId;
+      partner.roomId = roomId;
+
+      partner.join(roomId);
+      socket.join(roomId);
+
+      io.to(roomId).emit("info", {
+        message: "You are now connected to a room",
+        textField: true,
+        activeUser: totalActiveUser.size,
+        roomId,
+      });
+      console.info("Active Room", Object.keys(rooms).length);
+      console.info("Rooms: ", rooms);
+    } else {
+      waitingUsers.push(socket);
+      console.info("Not Match: ", { users: waitingUsers.length });
+      socket.emit("info", {
+        message: "Waiting for a partner...",
+        activeUser: totalActiveUser.size,
+        textField: false,
+      });
+    }
+  });
 
   // Send Message Event:
   socket.on("message", (data) => {
@@ -78,15 +118,16 @@ io.on("connection", (socket) => {
     // Remove Disconnected user from the set:
     totalActiveUser.delete(newUserSocketId);
 
-    // Emit Current Active user:
-    io.emit("active-user", { activeUser: totalActiveUser.size });
-
     if (socket.roomId && rooms[socket.roomId]) {
       const [user1, user2] = rooms[socket.roomId];
       const otherUser = socket === user1 ? user2 : user1;
       if (otherUser) {
         // Emit the message to current user:
-        otherUser.emit("info", { message: "Your partner has disconnected" });
+        otherUser.emit("info", {
+          message: "Your partner has disconnected",
+          activeUser: totalActiveUser.size,
+          textField: false,
+        });
         waitingUsers.push(otherUser);
         otherUser.roomId = null;
       }
@@ -96,6 +137,9 @@ io.on("connection", (socket) => {
       waitingUsers = waitingUsers.filter((user) => user !== socket);
       console.info("Disconnetct ", waitingUsers);
     }
+
+    // Emit Current Active user:
+    io.emit("active-user", { activeUser: totalActiveUser.size });
   });
 
   // Log Total Active User:

@@ -5,6 +5,15 @@ module.exports = {
   darkMode: false,
   theme: {
     extend: {
+      keyframes: {
+        fadeInOut: {
+          "0%, 100%": { opacity: 0 },
+          "10%, 90%": { opacity: 1 },
+        },
+      },
+      animation: {
+        fadeInOut: "fadeInOut 3s forwards",
+      },
       colors: {
         primary: {
           50: "#eff6ff",
@@ -58,4 +67,18 @@ module.exports = {
       ],
     },
   },
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        ".scrollbar-hide": {
+          /* Firefox */
+          "scrollbar-width": "none",
+          /* Safari and Chrome */
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        },
+      });
+    },
+  ],
 };

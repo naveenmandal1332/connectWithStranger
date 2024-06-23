@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { SocketContext } from "./SocketContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const socket = useContext(SocketContext);
 
   const initialState = {
     username: "",
@@ -26,6 +28,11 @@ const Login = () => {
     // Empty input field:
     setFormData(initialState);
     navigate("/chat", { state: formData });
+
+    // Trigger Event for chat:
+    socket.emit("start-chat", (data) => {
+      console.info("Message: ", data);
+    });
   };
 
   return (
